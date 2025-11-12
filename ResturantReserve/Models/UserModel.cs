@@ -2,9 +2,11 @@
 
 namespace ResturantReserve.Models
 {
-    internal abstract class UserModel
+    public abstract class UserModel
     {
         protected FbData fbd = new();
+        protected enum Actions { Register, Login }
+        protected Actions CurrentAction = Actions.Login;
         public EventHandler<bool>? OnAuthComplete;
         public bool IsRegistered => !string.IsNullOrWhiteSpace(Name);
         public bool IsBusy { get; protected set; } = false;

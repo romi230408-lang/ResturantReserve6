@@ -4,20 +4,26 @@ using ResturantReserve.Models;
 
 namespace ResturantReserve.ModelsLogic
 {
-    internal class User : UserModel
+    public class User : UserModel
     {
         public override void Register()
         {
             IsBusy = true;
+            CurrentAction = Actions.Register;
             fbd.CreateUserWithEmailAndPasswordAsync(Email, Password, Name, OnComplete);
         }
-
+        public void Login()
+        {
+            IsBusy = true;
+            fbd.SignInWithEmailAndPasswordAsync(Email, Password, OnComplete);
+        }
         private void OnComplete(Task task)
         {
             IsBusy = false;
             if (task.IsCompletedSuccessfully)
             {
-                SaveToPreferences();
+                if (CurrentAction == Actions.Register)
+                    SaveToPreferences();
                 OnAuthComplete?.Invoke(this, true);
             }
             else if (task.Exception != null)
@@ -29,6 +35,7 @@ namespace ResturantReserve.ModelsLogic
             else
                 ShowAlert(Strings.UnknownError);
         }
+
         private void ShowAlert(string errMessage)
         {
             errMessage = fbd.GetErrorMessage(errMessage);
@@ -50,11 +57,7 @@ namespace ResturantReserve.ModelsLogic
         }
 
 
-        internal void Login()
-        {
-            IsBusy = true;
-            fbd.SignInWithEmailAndPasswordAsync(Email, Password, OnComplete);
-        }
+        
 
         public User()
         {

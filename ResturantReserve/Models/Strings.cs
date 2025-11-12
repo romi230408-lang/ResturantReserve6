@@ -19,5 +19,7 @@
         public const string UserRegistered = "User Registered";
         public const string UnknownError = "Unknown Error";
         public const string AddGame = "Add Game";
+        public const string JoinGameErr = "Error joining game";
+        public const string GameDeleted = "Deleted";
     }
 }

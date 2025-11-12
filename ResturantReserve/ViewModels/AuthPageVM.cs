@@ -5,7 +5,7 @@ using ResturantReserve.Views;
 
 namespace ResturantReserve.ViewModels
 {
-    internal partial class AuthPageVM : ObservableObject
+    public partial class AuthPageVM : ObservableObject
     {
         private readonly User user = new();
         public ICommand AuthCommand { get; }

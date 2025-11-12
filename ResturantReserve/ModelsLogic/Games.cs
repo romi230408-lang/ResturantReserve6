@@ -1,32 +1,44 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using Plugin.CloudFirestore;
 using ResturantReserve.Models;
-using ResturantReserve.ModelsLogic;
 
 namespace ResturantReserve.ModelsLogic
 {
-    internal class Games : GamesModel
+    public class Games : GamesModel
     {
-        internal void AddGame()
+        public void AddGame()
         {
             IsBusy = true;
-            Game game = new();
-            game.SetDocument(OnComplete);
+            currentGame = new()
+            {
+                IsHostUser = true
+            };
+            currentGame.OnGameDeleted += OnGameDeleted;
+            currentGame.SetDocument(OnComplete);
         }
+
+        private void OnGameDeleted(object? sender, EventArgs e)
+        {
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                Toast.Make(Strings.GameDeleted, CommunityToolkit.Maui.Core.ToastDuration.Long, 14).Show();
+            });
+        }
+
         private void OnComplete(Task task)
         {
             IsBusy = false;
-            OnGameAdded?.Invoke(this, task.IsCompletedSuccessfully);
+            OnGameAdded?.Invoke(this, currentGame!);
         }
         public Games()
         {
 
         }
-        public void AddSnapshotListener()
+        public override void AddSnapshotListener()
         {
             ilr = fbd.AddSnapshotListener(Keys.GamesCollection, OnChange!);
         }
-        public void RemoveSnapshotListener()
+        public override void RemoveSnapshotListener()
         {
             ilr?.Remove();
         }
